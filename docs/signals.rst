@@ -26,7 +26,7 @@ early by returning a response.  In contrast all signal handlers are
 executed in undefined order and do not modify any data.
 
 The big advantage of signals over handlers is that you can safely
-subscribe to them for the split of a second.  These temporary
+subscribe to them for just a split second.  These temporary
 subscriptions are helpful for unittesting for example.  Say you want to
 know what templates were rendered as part of a request: signals allow you
 to do exactly that.
@@ -42,11 +42,11 @@ signal, you can use the :meth:`~blinker.base.Signal.disconnect` method.
 
 For all core Flask signals, the sender is the application that issued the
 signal.  When you subscribe to a signal, be sure to also provide a sender
-unless you really want to listen for signals of all applications.  This is
+unless you really want to listen for signals from all applications.  This is
 especially true if you are developing an extension.
 
-Here for example a helper context manager that can be used to figure out
-in a unittest which templates were rendered and what variables were passed
+For example, here is a helper context manager that can be used in a unittest
+to determine which templates were rendered and what variables were passed
 to the template::
 
     from flask import template_rendered
@@ -77,15 +77,15 @@ Make sure to subscribe with an extra ``**extra`` argument so that your
 calls don't fail if Flask introduces new arguments to the signals.
 
 All the template rendering in the code issued by the application `app`
-in the body of the `with` block will now be recorded in the `templates`
+in the body of the ``with`` block will now be recorded in the `templates`
 variable.  Whenever a template is rendered, the template object as well as
 context are appended to it.
 
 Additionally there is a convenient helper method
-(:meth:`~blinker.base.Signal.connected_to`).  that allows you to
+(:meth:`~blinker.base.Signal.connected_to`)  that allows you to
 temporarily subscribe a function to a signal with a context manager on
 its own.  Because the return value of the context manager cannot be
-specified that way one has to pass the list in as argument::
+specified that way, you have to pass the list in as an argument::
 
     from flask import template_rendered
 
@@ -148,7 +148,7 @@ signal subscribers::
             model_saved.send(self)
 
 Try to always pick a good sender.  If you have a class that is emitting a
-signal, pass `self` as sender.  If you emitting a signal from a random
+signal, pass ``self`` as sender.  If you are emitting a signal from a random
 function, you can pass ``current_app._get_current_object()`` as sender.
 
 .. admonition:: Passing Proxies as Senders
@@ -208,8 +208,8 @@ The following signals exist in Flask:
 .. data:: flask.request_started
    :noindex:
 
-   This signal is sent before any request processing started but when the
-   request context was set up.  Because the request context is already
+   This signal is sent when the request context is set up, before
+   any request processing happens.  Because the request context is already
    bound, the subscriber can access the request with the standard global
    proxies such as :class:`~flask.request`.
 
@@ -321,7 +321,8 @@ The following signals exist in Flask:
 
    .. versionadded:: 0.10
 
-.. data:: appcontext_popped
+.. data:: flask.appcontext_popped
+   :noindex:
 
    This signal is sent when an application context is popped.  The sender
    is the application.  This usually falls in line with the
@@ -348,4 +349,4 @@ The following signals exist in Flask:
 
    .. versionadded:: 0.10
 
-.. _blinker: http://pypi.python.org/pypi/blinker
+.. _blinker: https://pypi.python.org/pypi/blinker
